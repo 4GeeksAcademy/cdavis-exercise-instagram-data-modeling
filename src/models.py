@@ -13,17 +13,28 @@ class Person(Base):
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
+    email = Column(String(250), nullable=False, unique=True)
+    username = Column(String(250), nullable=False)
+    lastname = Column(String(250), nullable=False)
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Follower(Base):
+    __tablename__ = 'follower'
+    user_from_id = Column(Integer, ForeignKey('person.id'), primary_key=True)
+    user_to_id = Column(Integer, ForeignKey('person.id'), primary_key=True)
+
+class Comment(Base):
+    __tablename__ = 'comment'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    comment = Column(String(250), ForeignKey('post.id'), nullable=False)
+    author_id = Column(Integer, ForeignKey('person.id'), nullable=False)
+    post_id = Column(Integer, ForeignKey('post.id'), nullable=False)
+
+class Post(Base):
+    __tablename__ = 'post'
+    id = Column(Integer, primary_key=True)
+    image_url = Column(String(250))
+    user_id = Column(Integer, ForeignKey('person.id'), nullable=False)
+    username = relationship('Person')
 
     def to_dict(self):
         return {}
